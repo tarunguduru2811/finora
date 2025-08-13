@@ -1,0 +1,84 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id             Int             @id @default(autoincrement())
+    email          String          @unique
+    name           String?
+    password       String
+    accounts       Account[]
+    categories     Category[]
+    recurringRules RecurringRule[]
+    budgets        Budget[]
+    createdAt      DateTime        @default(now())
+    updatedAt      DateTime        @updatedAt
+}
+
+model Account {
+    id           Int           @id @default(autoincrement())
+    name         String
+    currency     String        @default("USD")
+    userId       Int
+    user         User          @relation(fields: [userId], references: [id])
+    transactions Transaction[]
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+}
+
+model Transaction {
+    id         Int             @id @default(autoincrement())
+    accountId  Int
+    account    Account         @relation(fields: [accountId], references: [id])
+    amount     Float
+    currency   String
+    type       TransactionType
+    date       DateTime
+    categoryId Int?
+    category   Category?       @relation(fields: [categoryId], references: [id])
+    merchant   String?
+    notes      String?
+    receiptUrl String?
+    splitItems Json?
+    createdAt  DateTime        @default(now())
+    updatedAt  DateTime        @updatedAt
+}
+
+enum TransactionType {
+    INCOME
+    EXPENSE
+    TRANSFER
+}
+
+model Category {
+    id           Int           @id @default(autoincrement())
+    name         String
+    userId       Int
+    user         User          @relation(fields: [id], references: [id])
+    transactions Transaction[]
+    Budget       Budget[]
+}
+
+model RecurringRule {
+    id       Int     @id @default(autoincrement())
+    userId   Int
+    user     User    @relation(fields: [userId], references: [id])
+    template Json
+    cron     String
+    active   Boolean @default(true)
+}
+
+model Budget {
+    id         Int       @id @default(autoincrement())
+    userId     Int
+    user       User      @relation(fields: [id], references: [id])
+    categoryId Int?
+    category   Category? @relation(fields: [categoryId], references: [id])
+    period     String
+    amount     Float
+}
