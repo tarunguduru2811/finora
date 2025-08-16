@@ -1,10 +1,12 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useRouter } from "next/navigation";
 
 export default function AccountCard({ name, currency, balance }: { name: string; currency: string; balance: number }) {
+    const router = useRouter();
     return (
-        <Card className="shadow-sm hover:shadow-md transition">
+        <Card className="shadow-sm hover:shadow-md transition" onClick={() => router.push(`/dashboard/transactions/`)}>
             <CardHeader>
                 <CardTitle>{name}</CardTitle>
             </CardHeader>

@@ -1,16 +1,16 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogHeader } from "@/components/ui/dialog"
+import { Dialog, DialogHeader, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useAccountStore } from "@/lib/store"
-import { DialogContent, DialogTrigger } from "@radix-ui/react-dialog"
 import { useState } from "react"
 
 
 
 
 export default function AddAccountModal() {
+    const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [currency, setCurrency] = useState("USD");
     const { addAccount } = useAccountStore();
@@ -18,9 +18,10 @@ export default function AddAccountModal() {
         await addAccount(name, currency)
         setName("");
         setCurrency("USD")
+        setOpen(false)
     }
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>Add Account</Button>
             </DialogTrigger>

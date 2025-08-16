@@ -59,7 +59,7 @@ model Category {
     id           Int           @id @default(autoincrement())
     name         String
     userId       Int
-    user         User          @relation(fields: [id], references: [id])
+    user         User          @relation(fields: [userId], references: [id])
     transactions Transaction[]
     Budget       Budget[]
 }
@@ -79,6 +79,8 @@ model Budget {
     user       User      @relation(fields: [id], references: [id])
     categoryId Int?
     category   Category? @relation(fields: [categoryId], references: [id])
-    period     String
     amount     Float
+    period     String
+    startDate  DateTime
+    endDate    DateTime
 }

@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link";
-import { CreditCard, Home, PieChart, Settings, LogOut } from "lucide-react"
+import { CreditCard, Home, PieChart, Settings, LogOut, List } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useUserStore } from "@/lib/store";
 
 const navItems = [
     {
@@ -12,10 +13,10 @@ const navItems = [
         name: "Accounts", href: "/dashboard/accounts", icon: CreditCard
     },
     {
-        name: "Budgets", href: "/dashboard/budgets", icon: PieChart
+        name: "Transactions", href: "/dashboard/transactions", icon: PieChart
     },
     {
-        name: "Settings", href: "/dashboard/dashboard/settings", icon: Settings
+        name: "Categories", href: "/dashboard/category", icon: List
     }
 ]
 export function Sidebar() {
@@ -23,7 +24,7 @@ export function Sidebar() {
         <div className="h-screen w-64 bg-white border-r flex flex-col">
             {/* Logo */}
             <div className="h-16 flex items-center justify-center font-bold text-xl border-b">
-                My Finance
+                Finalytics
             </div>
             {/* navigations */}
             <nav className="flex-1 p-4 space-y-2">

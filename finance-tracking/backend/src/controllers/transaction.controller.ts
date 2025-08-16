@@ -7,10 +7,13 @@ import { error } from "console";
 export async function getTransactions(req:Request,res:Response) {
     try{
         const userId = (req as any).user.userId;
-        const {start,end,accountId} = req.query;
+        const {start,end,accountId,type} = req.query;
 
         const where : any = {
-            account:{userId}
+            account:{
+                userId:userId
+            },
+            type:type
         };
 
         if(accountId) where.accountId = Number(accountId)
@@ -126,3 +129,5 @@ export async function deleteTransaction(req:Request,res:Response){
         return handleError(res,err)
     }
 }
+
+
