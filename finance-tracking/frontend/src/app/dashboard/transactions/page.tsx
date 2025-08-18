@@ -75,6 +75,8 @@ export default function TransactionPage() {
         });
         fetchTransactions();
     }
+
+
     return (
         <div className="p-6 space-y-6">
             <Card>
@@ -103,7 +105,7 @@ export default function TransactionPage() {
                 <CardHeader>
                     <CardTitle>Transactions</CardTitle>
                     <CardContent>
-                        <TransactionTable transactions={transactions} />
+                        <TransactionTable transactions={transactions} categories={categories} fetchTransactions={fetchTransactions} />
                     </CardContent>
                 </CardHeader>
             </Card>

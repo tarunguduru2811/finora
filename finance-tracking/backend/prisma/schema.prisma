@@ -75,8 +75,9 @@ model RecurringRule {
 
 model Budget {
     id         Int       @id @default(autoincrement())
+    name       String?
     userId     Int
-    user       User      @relation(fields: [id], references: [id])
+    user       User      @relation(fields: [userId], references: [id])
     categoryId Int?
     category   Category? @relation(fields: [categoryId], references: [id])
     amount     Float

@@ -1,5 +1,5 @@
-import prisma from "@/db";
-import { handleError } from "@/utils/errors";
+import prisma from "../db";
+import { handleError } from "../utils/errors";
 import { Request, Response } from "express";
 
 
@@ -7,7 +7,7 @@ import { Request, Response } from "express";
 export async function createBudget(req:Request,res:Response){
     try{
        const userId = (req as any).user.userId;
-       const {categoryId,amount,period,startDate,endDate} = req.body;
+       const {name,categoryId,amount,period,startDate,endDate} = req.body;
 
        const category = await prisma.category.findUnique({
         where:{id:Number(categoryId)}
@@ -21,6 +21,7 @@ export async function createBudget(req:Request,res:Response){
             data:{
                 userId,
                 categoryId:Number(categoryId),
+                name:String(name),
                 amount:Number(amount),
                 period:period || "MONTHLY",
                 startDate:startDate?new Date(startDate) : new Date(),
@@ -34,6 +35,7 @@ export async function createBudget(req:Request,res:Response){
     }
 }
 
+//get budgets with progress
 export async function getBudgets(req:Request,res:Response) {
         try{
             const userId = (req as any).user.userId;
@@ -61,17 +63,46 @@ export async function getBudgets(req:Request,res:Response) {
                     })
 
                     const spent = spentAgg._sum.amount || 0;
+                    const remaining = b.amount - spent;
+                    const progress = spent > 0 ? Number(((spent)/b.amount)*100).toFixed(2) : "0"
 
+                    //Alerts
+                    let alerts:string = "safe";
+                    if(spent>b.amount){
+                        alerts = "over";
+                    }else if(parseFloat(progress) >= 80){
+                        alerts="warning"
+                    }
+
+                    //Forecasting
+                    let forecast:string="N/A";
+
+                    const today = new Date();
+                    if(today > b.startDate && b.endDate){
+                        const elapsedDays = (today.getTime() - b.startDate.getTime())/(1000*60*60*24);
+                        const totalDays = (b.endDate.getDate() - b.startDate.getTime())/(1000*60*60*24);
+
+                        if(elapsedDays > 0){
+                            const dailySpentRate = spent / elapsedDays;
+                            const expectedSpent = totalDays * dailySpentRate;
+
+                            forecast = expectedSpent > b.amount ? "Overspending Likely" : "On Track"
+                        }
+                    }
+                    
                     return{
                         id:b.id,
+                        name:b.name,
                         category:b.category?.name,
                         amount:b.amount,
                         spent,
-                        remaining:b.amount = spent,
+                        remaining,
                         period : b.period,
                         startDate : b.startDate,
                         endDate : b.endDate,
-                        progress : Number((spent/b.amount)*100).toFixed(2)
+                        progress ,
+                        alerts,
+                        forecast
                     }
                 })
             )
@@ -116,7 +147,14 @@ export async function updateBudget(req:Request,res:Response){
             if(!existing || existing.userId !== userId){
                 return res.status(401).json({error:"Not Found"})
             }
+            const data = req.body;
 
+            if(data.startDate){
+                data.startDate = new Date(data.startDate);
+            }
+            if(data.endDate){
+                data.endDate = new Date(data.endDate)
+            }
             const updated = await prisma.budget.update({
                 where:{id},
                 data:req.body
