@@ -1,3 +1,4 @@
+import { authenticateToken } from "@/middleware/auth.middleware";
 import { login, register } from "../controllers/auth.controller";
 import { Router } from "express";
 

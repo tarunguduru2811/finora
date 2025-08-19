@@ -56,7 +56,7 @@ export default function AddTransactionModal({ accounts, onSave, categories }: Pr
                     New Transaction
                 </DialogHeader>
                 <div className="space-y-4">
-                    <div >
+                    <div className="space-y-2">
                         <Label className="space-y-5">Account</Label>
                         <Select value={form.accountId} onValueChange={(v) => setForm({ ...form, accountId: v })}>
                             <SelectTrigger>
@@ -72,7 +72,7 @@ export default function AddTransactionModal({ accounts, onSave, categories }: Pr
                         </Select>
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                         <Label>
                             Category
                         </Label>
@@ -89,11 +89,11 @@ export default function AddTransactionModal({ accounts, onSave, categories }: Pr
                             </SelectContent>
                         </Select>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                         <Label>Amount</Label>
                         <Input value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                         <Label>Type</Label>
                         <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
                             <SelectTrigger><SelectValue placeholder="Select Type..." /></SelectTrigger>
@@ -105,17 +105,17 @@ export default function AddTransactionModal({ accounts, onSave, categories }: Pr
                         </Select>
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                         <Label>Date</Label>
                         <Input type="Date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                         <Label>Merchant</Label>
                         <Input value={form.merchant} onChange={(e) => setForm({ ...form, merchant: e.target.value })} />
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                         <Label>Notes</Label>
                         <Input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
                     </div>

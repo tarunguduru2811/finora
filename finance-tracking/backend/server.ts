@@ -7,6 +7,8 @@ import accountRoutes from './src/routes/account.routes'
 import transactionRoutes from './src/routes/transaction.routes'
 import categoryRoutes from './src/routes/category.routes'
 import budgetRoutes from "./src/routes/budget.routes"
+import recurringRuleRoutes from "./src/routes/recurringRule.routes"
+import {processRecurringRules} from "./src/services/recurringServices"
 dotenv.config();
 
 const app = express();
@@ -36,8 +38,11 @@ app.use('/api/accounts',accountRoutes)
 app.use('/api/categories',categoryRoutes)
 app.use('/api/transactions',transactionRoutes)
 app.use("/api/budgets",budgetRoutes)
+app.use("/api/recurring-rules",recurringRuleRoutes)
 
 const port = process.env.PORT || 5000 
 app.listen(port,()=>{
     console.log(`Server is listening at ${port}`)
+      // 🔥 Start recurring job processor when server starts
+      processRecurringRules()
 })

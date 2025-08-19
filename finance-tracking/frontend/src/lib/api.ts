@@ -16,3 +16,19 @@ api.interceptors.request.use((config)=>{
     }
     return config;
 })
+
+export const recurringRuleApis =  {
+    list:()=>api.get("/recurring-rules"),
+    create:(data:any)=>api.post("/recurring-rules",data),
+    update:(id:number,data:any)=>api.put(`recurring-rules/${id}`,data),
+    delete:(id:number)=>api.delete(`/recurring-rules/${id}`),
+    toggle:(id:number,data:any)=>api.put(`/recurring-rules/${id}`,data)
+}
+
+export const accountsApi = {
+    list:()=>api.get("/accounts")
+}
+
+export const categoriesApi = {
+    list:()=>api.get("/categories")
+}

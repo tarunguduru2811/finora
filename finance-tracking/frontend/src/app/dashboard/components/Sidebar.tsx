@@ -1,9 +1,10 @@
 "use client"
 
 import Link from "next/link";
-import { CreditCard, Home, PieChart, Settings, LogOut, List } from "lucide-react"
+import { CreditCard, Home, PieChart, Settings, LogOut, List, HandCoins } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useUserStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
 
 const navItems = [
     {
@@ -17,9 +18,14 @@ const navItems = [
     },
     {
         name: "Categories", href: "/dashboard/category", icon: List
+    },
+    {
+        name: "Budgets", href: "/dashboard/budgets", icon: HandCoins
     }
 ]
 export function Sidebar() {
+    const router = useRouter()
+    const { logout } = useUserStore();
     return (
         <div className="h-screen w-64 bg-white border-r flex flex-col">
             {/* Logo */}
@@ -49,7 +55,10 @@ export function Sidebar() {
 
             {/* Logout */}
             <div className="p-4 border-t">
-                <button className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 w-full">
+                <button className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 w-full" onClick={() => {
+                    logout();
+                    router.push("/")
+                }}>
                     <LogOut className="w-5 h-5" /> Logout
                 </button>
             </div>
