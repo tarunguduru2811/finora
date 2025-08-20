@@ -11,7 +11,7 @@ interface UserState{
     token:string | null,
     setUser:(user:User | null)=> void
     login:(email:string,password:string)=>Promise<void>
-    logout:()=>void
+    // logout:()=>void
 }
 
 
@@ -33,7 +33,7 @@ export const useUserStore = create<UserState>()(
                 set({ user });
                 localStorage.setItem("token",token)
               },
-            logout:()=>set({user:null,token:null})
+            // logout:()=>set({user:null,token:null}) TODO : On Doing Refresh Again Asking to Login
         }
     ),{name:"auth-storage"})
 )

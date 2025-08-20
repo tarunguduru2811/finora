@@ -1,7 +1,6 @@
 import {Request,Response} from "express"
 import { handleError } from "../utils/errors";
 import prisma from "../db";
-import { error } from "console";
 
 
 export async function getTransactions(req:Request,res:Response) {
@@ -130,4 +129,101 @@ export async function deleteTransaction(req:Request,res:Response){
     }
 }
 
+export async function transactionSummary(req:Request,res:Response){
+    try{
+        const userId = (req as any).user.userId;
+        const whereIncome:any = {
+            account:{
+                userId:userId
+            },
+            type:"INCOME"
+        }
 
+        const whereExpense:any = {
+            account:{
+                userId:userId
+            },
+            type:"EXPENSE"
+        }
+        const income = await prisma.transaction.aggregate({
+            where:whereIncome,
+            _sum:{amount:true}
+        })
+
+        const expense = await prisma.transaction.aggregate({
+            where:whereExpense,
+            _sum:{amount:true}
+        })
+
+        const totalIncome = income._sum.amount || 0;
+        const totalExpense = expense._sum.amount || 0;
+
+        return res.json({
+            balance:totalIncome-totalExpense,
+            income:totalIncome,
+            expense:totalExpense
+        })
+    }catch(err){
+        return handleError(res,err);
+    }
+}
+
+export async function monthlyExpense(req:Request,res:Response){
+    try{
+        const userId = (req as any).user.userId
+
+        const grouped:Record<string,{income:number,expense:number}>={};
+
+        const transactions = await prisma.transaction.findMany({
+            select:{type:true,amount:true,date:true},
+            where:{account:{
+                userId:userId
+            }}
+        })
+
+        transactions.forEach((tx)=>{
+            const date = new Date(tx.date);
+            const month = date.toLocaleString("default", { month: "short", year: "numeric" });
+            if(!grouped[month]) grouped[month] = {income:0,expense:0};
+            if(tx.type === "INCOME") grouped[month].income += tx.amount
+            else grouped[month].expense += tx.amount
+        })
+
+        const result = Object.entries(grouped).map(([month,values])=>({
+            month,
+            ...values
+        }))
+
+        return res.json(result)
+    }catch(err){
+        return handleError(res,err)
+    }
+}
+
+export async function getRecentTransactions(req:Request,res:Response){
+    try{
+        const userId = (req as any).user.userId;
+
+        const transactions = await prisma.transaction.findMany({
+            where:{
+                account:{
+                    id:userId
+                }
+            },
+            take:10,
+            select:{
+                id:true,
+                notes:true,
+                amount:true,
+                category:{
+                   
+                },
+                date:true
+            }
+        })
+
+        return res.json(transactions);
+    }catch(err){
+        return handleError(res,err)
+    }
+}

@@ -100,3 +100,37 @@ export async function getTransactionByCategoryId(req:Request,res:Response){
         return handleError(res,error)
     }
 }
+
+export async function expensesByCategory(req:Request,res:Response){
+    try{
+        const userId = (req as any).user.userId;
+
+        const where : any = {
+            account:{
+                userId:userId
+            },
+            type:"EXPENSE"
+        }
+
+        const expenses = await prisma.transaction.groupBy({
+            where,
+            by:["categoryId"],
+            _sum:{amount:true}
+        })
+
+        const categories = await prisma.category.findMany({
+            where:{userId}
+        })
+
+        const formatted = expenses.map((item)=>{
+            const category = categories.find((c)=>c.id === item.categoryId)
+            return {
+                name:category?.name,
+                expenses:item._sum.amount
+            }
+        })
+        return res.json(formatted);
+    }catch(err){
+        return handleError(res,err)
+    }
+}
