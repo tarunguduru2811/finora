@@ -33,7 +33,7 @@ interface MonthlyExpense {
 // }
 
 export default function DashboardPage() {
-    const user = useUserStore((state) => state.user);
+    const { user } = useUserStore();
     const router = useRouter();
 
     const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -43,7 +43,7 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!user) {
+        if (!localStorage.getItem("token")) {
             router.push("/login")
         }
 

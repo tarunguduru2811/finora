@@ -13,16 +13,19 @@ import {
     CardContent,
     CardFooter,
 } from "@/components/ui/card"
+import { api } from "@/lib/api"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const { login } = useUserStore()
+    const { setUser } = useUserStore()
     const router = useRouter()
 
     const handleLogin = async () => {
         try {
-            await login(email, password)
+            const res = await api.post("/auth/login", { email, password })
+            localStorage.setItem("token", res.data.token)
+            setUser(res.data)
             router.push("/dashboard")
         } catch (error) {
             console.error(error)

@@ -32,7 +32,7 @@ export default function CategoryList() {
                 <h1 className="text-xl font-bold">Categories</h1>
                 <AddCategoryModal onCategoryAdded={fetchCategories} />
             </div>
-            <div className="text-xl font-bold">
+            <div className="text-xl font-bold space-y-4">
                 {
                     categories.map((cat) => (
                         <CategoryCard

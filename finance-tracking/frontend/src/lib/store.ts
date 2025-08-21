@@ -21,8 +21,7 @@ interface AccountState {
     addAccount : (name:String,currency:String) => Promise<void>
 }
 
-export const useUserStore = create<UserState>()(
-    persist((set)=>(
+export const useUserStore = create<UserState>((set)=>(
         {
             user:null,
             token:null,
@@ -30,13 +29,12 @@ export const useUserStore = create<UserState>()(
             login: async (email, password) => {
                 const res = await api.post("/auth/login", { email, password });
                 const { user ,token} = res.data; // assuming your API sends { user, token }
-                set({ user });
+                set({ user ,token});
                 localStorage.setItem("token",token)
               },
-            // logout:()=>set({user:null,token:null}) TODO : On Doing Refresh Again Asking to Login
         }
-    ),{name:"auth-storage"})
-)
+))
+
 export const useAccountStore = create<AccountState>((set)=>({
     accounts:[],
     fetchAccounts: async () => {
