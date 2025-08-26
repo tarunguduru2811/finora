@@ -1,8 +1,11 @@
 import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
+import passport from "passport"
+import session from "express-session"
 import {Request,Response } from "express"
 import authRoutes from './src/routes/auth.routes';
+import cookieParser from "cookie-parser";
 import accountRoutes from './src/routes/account.routes'
 import transactionRoutes from './src/routes/transaction.routes'
 import categoryRoutes from './src/routes/category.routes'
@@ -27,6 +30,15 @@ app.use(cors({
 //   }));
 
 app.use(express.json());
+app.use(cookieParser());
+app.use(session({
+  secret:process.env.SESSION_SECRET!,
+  resave:false,
+  saveUninitialized:false
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 //health
 app.get("/health",(req:Request,res:Response)=>{

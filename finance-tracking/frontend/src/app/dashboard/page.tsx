@@ -46,9 +46,9 @@ export default function DashboardPage() {
     const [open, setOpen] = useState(false)
 
     useEffect(() => {
-        if (!localStorage.getItem("token")) {
-            router.push("/login")
-        }
+        // if (!localStorage.getItem("token")) {
+        //     router.push("/login")
+        // }
 
         async function fetchDashboard() {
             try {

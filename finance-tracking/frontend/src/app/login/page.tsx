@@ -15,9 +15,12 @@ import {
 } from "@/components/ui/card"
 import { api } from "@/lib/api"
 import { toast } from "sonner"
+import { KeyRound } from "lucide-react"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [googleLoading, setGoogleLoading] = useState(false)
     const [password, setPassword] = useState("")
     const { setUser } = useUserStore()
     const user = useUserStore((state) => state.user)
@@ -42,9 +45,21 @@ export default function LoginPage() {
         }
     }
 
+    const handleGoogleLogin = async () => {
+        setGoogleLoading(true)
+        // Redirect to Google OAuth endpoint
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/google`
+        // setUser({res.data.userDetails})
+    }
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
     return (
         <div className="relative min-h-screen flex items-center justify-center">
-            {/* 🔥 Background image with overlay */}
+            {/* Background image with overlay */}
             <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
@@ -65,7 +80,7 @@ export default function LoginPage() {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4" onKeyPress={handleKeyPress}>
                     <Input
                         placeholder="Email"
                         type="email"
@@ -82,22 +97,60 @@ export default function LoginPage() {
                     />
                 </CardContent>
 
-                <CardFooter className="flex flex-col space-y-3">
+                <CardFooter className="flex flex-col space-y-4">
                     <Button
                         onClick={handleLogin}
-                        className="w-full bg-black text-white hover:bg-gray-800"
+                        disabled={loading}
+                        className="w-full bg-black text-white hover:bg-gray-800 disabled:opacity-50"
                     >
-                        Login
+                        {loading ? "Signing in..." : "Login"}
                     </Button>
-                    <p className="text-sm text-gray-700 text-center">
-                        Don’t have an account?{" "}
-                        <a href="/register" className="font-semibold underline">
-                            Register
-                        </a>
-                        <a href="/forgot-password">
-                            Forgot Password
-                        </a>
-                    </p>
+
+                    {/* Divider */}
+                    <div className="relative my-2">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300" />
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    {/* Google Sign In Button */}
+                    <Button
+                        onClick={handleGoogleLogin}
+                        disabled={googleLoading}
+                        variant="outline"
+                        className="w-full flex items-center gap-3 border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        {googleLoading ? (
+                            <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                        ) : (
+                            <KeyRound className="w-5 h-5" />
+                        )}
+                        {googleLoading ? "Redirecting to Google..." : "Continue with Google"}
+                    </Button>
+
+                    {/* Links */}
+                    <div className="text-sm text-gray-700 text-center space-y-2">
+                        <p>
+                            Don't have an account?{" "}
+                            <a
+                                href="/register"
+                                className="font-semibold underline hover:text-black transition-colors"
+                            >
+                                Register
+                            </a>
+                        </p>
+                        <p>
+                            <a
+                                href="/forgot-password"
+                                className="font-semibold underline hover:text-black transition-colors"
+                            >
+                                Forgot Password?
+                            </a>
+                        </p>
+                    </div>
                 </CardFooter>
             </Card>
         </div>

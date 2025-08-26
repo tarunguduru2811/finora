@@ -72,7 +72,7 @@ export default function MonthlyReportCard({ open, onClose, openDialog }: Props) 
             autoTable(doc, {
                 startY: 110,
                 head: [["Category", "Amount $"]],
-                body: Object.entries(categoryTotals).map(([cat, amt]) => [cat, amt]),
+                //body: Object.entries(categoryTotals).map(([cat, amt]) => [cat, amt]),
 
             })
 

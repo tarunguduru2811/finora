@@ -13,6 +13,7 @@ interface UserState{
     setUser:(user:User | null)=> void
     login:(email:string,password:string)=>Promise<void>
     // logout:()=>void
+    fetchUser:()=>Promise<void>
 }
 
 
@@ -33,6 +34,15 @@ export const useUserStore = create<UserState>((set)=>(
                 set({ user ,token});
                 localStorage.setItem("token",token)
               },
+              fetchUser: async () => {
+                try {
+                  const res = await api.get("/auth/me");
+                  set({ user: res.data.user });
+                  localStorage.setItem("token",res.data.token)
+                } catch {
+                  set({ user: null, token: null });
+                }
+            },
         }
 ))
 

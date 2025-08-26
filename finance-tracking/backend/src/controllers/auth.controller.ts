@@ -1,11 +1,13 @@
-import {Request,Response} from "express"
+import {NextFunction, Request,Response} from "express"
 import { handleError } from "../utils/errors";
-import { error } from "console";
+import { error, profile } from "console";
 import prisma from "../db";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import crypto from "crypto"
 import nodemailer from "nodemailer"
+import passport from "passport"
+import {Strategy as GoogleStrategy} from "passport-google-oauth20"
 
 export async function register(req:Request,res:Response){
     try{
@@ -129,4 +131,87 @@ export async function resetPassword(req:Request,res:Response){
     }catch(err){
         return handleError(res,err)
     }
+}
+
+passport.use(new GoogleStrategy({
+    clientID:process.env.GOOGLE_CLIENT_ID!,
+    clientSecret:process.env.GOOGLE_CLIENT_SECRET!,
+    callbackURL:process.env.GOOGLE_CALLBACK_URL!,
+    },
+    async (accessToken:string,refreshToken:string,profile:any,
+        done:(error:any,user?:any)=>void) => {
+        try{
+            let user = await prisma.user.findUnique(
+                {where:{providerId:profile.id}}
+            )
+
+            if(!user){
+                user = await prisma.user.create({
+                    data:{
+                        email:profile.emails?.[0].value || "",
+                        name:profile.displayName,
+                        provider:"google",
+                        providerId:profile.id,
+                        password:"" //TODO:handle password for oauth users
+                    }
+                })
+            }
+            console.log("User Created Successfully")
+            return done(null,user)
+        }catch(err){
+            return done(err,null)
+        }
+    }
+))
+
+//Serialize / Deserialize user (for passport session)
+passport.serializeUser((user: any, done:(error:any,user:any)=>void) => done(null, user.id))
+passport.deserializeUser(async (id:number,done:(error:any,user:any)=>void)=>{
+    const user = await prisma.user.findUnique({where:{id}})
+    done(null,user)
+})
+
+export function googleAuth(req: Request, res: Response) {
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
+}
+
+export function googleAuthCallback(req: Request, res: Response, next: NextFunction) {
+    passport.authenticate("google", { failureRedirect: "/login" }, (err, user) => {
+        if (err) return next(err);
+        if (!user) return res.redirect("/login");
+        
+        const token = jwt.sign(
+            { userId: user.id },
+            process.env.JWT_SECRET!,
+            { expiresIn: "7d" }
+        );
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        });
+        res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+    })(req, res, next);
+}
+
+export async function googleAuthenticate(req:Request,res:Response){
+    const token = req.cookies.token;
+    if(!token) return res.status(401).json({error:"Not Authenticated"})
+    console.log("Token....",token)
+    const payload = jwt.verify(token,process.env.JWT_SECRET!) as any;
+    console.log("Payload:",payload);
+    const userId = payload.userId;
+
+    const user = await prisma.user.findUnique({
+        where:{id:userId}
+    })
+
+    const {password,...safeUser} = user as any;
+    const userDetails = {
+        userId:user?.id,
+        name:user?.name,
+        email:user?.email
+    }
+    return res.json({userDetails,token});
 }

@@ -10,7 +10,7 @@ interface JwtPayloadCustom{
 export function authenticateToken(req:Request,res:Response,next:NextFunction){
     try{
         const authHeader = req.headers["authorization"]
-        const token = authHeader && authHeader.split(' ')[1];
+        const token = authHeader && authHeader.split(' ')[1] || req.cookies.token;
         console.log("Token....",token);
         if(!token) return res.status(401).json({error:"Missing Token"})
         
