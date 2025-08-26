@@ -1,10 +1,11 @@
-import { createTransaction, deleteTransaction, getRecentTransactions, getTransactions, getTransactionsById, monthlyExpense, transactionSummary, updateTransaction } from "../controllers/transaction.controller";
+import { createTransaction, deleteTransaction, getMonthlyReport, getRecentTransactions, getTransactions, getTransactionsById, monthlyExpense, transactionSummary, updateTransaction } from "../controllers/transaction.controller";
 import { authenticateToken } from "../middleware/auth.middleware";
 import { Router } from "express";
 
 const router = Router();
 
 router.get("/",authenticateToken,getTransactions)
+router.get("/report/:userId/:month/:year",authenticateToken,getMonthlyReport)
 router.get("/summary",authenticateToken,transactionSummary)
 router.get("/monthly-expense",authenticateToken,monthlyExpense)
 router.get("/recent-transactions",authenticateToken,getRecentTransactions)

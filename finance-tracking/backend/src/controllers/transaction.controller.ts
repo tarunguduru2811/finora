@@ -1,7 +1,7 @@
 import {Request,Response} from "express"
 import { handleError } from "../utils/errors";
 import prisma from "../db";
-
+import PDFDocument from "pdfkit"
 
 export async function getTransactions(req:Request,res:Response) {
     try{
@@ -227,3 +227,58 @@ export async function getRecentTransactions(req:Request,res:Response){
         return handleError(res,err)
     }
 }
+
+
+
+export async function getMonthlyReport(req: Request, res: Response) {
+    try {
+      const { userId, year, month } = req.params;
+  
+      const parsedUserId = parseInt(userId);
+      const parsedYear = parseInt(year);
+      const parsedMonth = parseInt(month);
+  
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          account: {
+            userId: parsedUserId,
+          },
+          date: {
+            gte: new Date(parsedYear, parsedMonth - 1, 1),
+            lt: new Date(parsedYear, parsedMonth, 1),
+          },
+        },
+      });
+  
+      const totalIncome = transactions
+        .filter((t) => t.type === "INCOME")
+        .reduce((acc, t) => acc + t.amount, 0);
+      const totalExpense = transactions
+        .filter((t) => t.type === "EXPENSE")
+        .reduce((acc, t) => acc + t.amount, 0);
+      const netSavings = totalIncome - totalExpense;
+  
+      const categories = await prisma.category.findMany({ where: { userId: parsedUserId } });
+  
+      const categoryTotals: Record<string, number> = {};
+      transactions
+        .filter((t) => t.type === "EXPENSE")
+        .forEach((t) => {
+          const category = categories.find((c) => c.id === t.categoryId);
+          if (category) {
+            categoryTotals[category.name] = (categoryTotals[category.name] || 0) + t.amount;
+          }
+        });
+      
+      return res.json({
+        totalExpense,
+        totalIncome,
+        netSavings,
+        categoryTotals
+      })
+      
+    } catch (err) {
+      console.error("Error generating report:", err);
+    }
+  }
+  

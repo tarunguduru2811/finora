@@ -7,6 +7,8 @@ import { api } from "@/lib/api";
 import { useUserStore } from "@/lib/store"
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import MonthlyReportCard from "./components/MonthlyReportCard";
+import { Button } from "@/components/ui/button";
 
 
 interface SummaryData {
@@ -41,6 +43,7 @@ export default function DashboardPage() {
     const [monthlyExpense, setMonthlyExpenses] = useState<MonthlyExpense[]>([])
     const [recentTransactions, setRecentTransactions] = useState<any>([])
     const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false)
 
     useEffect(() => {
         if (!localStorage.getItem("token")) {
@@ -68,7 +71,7 @@ export default function DashboardPage() {
                 setRecentTransactions(recentRes.data)
 
             } catch (err) {
-                console.error("Error in fetching Dashboard Data")
+                console.error("Error in fetching Dashboard Data", err)
             } finally {
                 setLoading(false)
             }
@@ -92,7 +95,10 @@ export default function DashboardPage() {
     }
     return (
         <div className="p-6 space-y-6">
-            <h1 className="text-2xl font-bold">Welcome Back !</h1>
+            <div className="flex justify-between">
+                <h1 className="text-2xl font-bold">Welcome Back {user?.name} 👋!</h1>
+                <MonthlyReportCard open={open} onClose={() => setOpen(false)} openDialog={() => setOpen(true)} />
+            </div>
 
             {/* summary cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

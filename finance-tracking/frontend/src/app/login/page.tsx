@@ -14,22 +14,31 @@ import {
     CardFooter,
 } from "@/components/ui/card"
 import { api } from "@/lib/api"
+import { toast } from "sonner"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const { setUser } = useUserStore()
+    const user = useUserStore((state) => state.user)
     const router = useRouter()
 
     const handleLogin = async () => {
         try {
             const res = await api.post("/auth/login", { email, password })
             localStorage.setItem("token", res.data.token)
-            setUser(res.data)
+            // console.log("User Details", res.data.user)
+            const userData = {
+                id: res.data.user.id,
+                name: res.data.user.name,
+                email: res.data.user.email
+            }
+            setUser(userData)
+            console.log("User Details...", useUserStore.getState().user);
             router.push("/dashboard")
         } catch (error) {
             console.error(error)
-            alert("Login Failed")
+            toast("Invalid Credentials")
         }
     }
 
@@ -84,6 +93,9 @@ export default function LoginPage() {
                         Don’t have an account?{" "}
                         <a href="/register" className="font-semibold underline">
                             Register
+                        </a>
+                        <a href="/forgot-password">
+                            Forgot Password
                         </a>
                     </p>
                 </CardFooter>

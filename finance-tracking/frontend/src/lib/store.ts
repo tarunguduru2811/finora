@@ -4,6 +4,7 @@ import { api } from "./api";
 
 interface User{
     id:number,
+    name:string,
     email:string
 }
 interface UserState{
