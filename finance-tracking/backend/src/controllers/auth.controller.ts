@@ -156,13 +156,14 @@ passport.use(new GoogleStrategy({
                     }
                 })
             }
-            console.log("User Created Successfully")
             return done(null,user)
         }catch(err){
             return done(err,null)
         }
     }
 ))
+
+
 
 //Serialize / Deserialize user (for passport session)
 passport.serializeUser((user: any, done:(error:any,user:any)=>void) => done(null, user.id))
@@ -215,3 +216,4 @@ export async function googleAuthenticate(req:Request,res:Response){
     }
     return res.json({userDetails,token});
 }
+

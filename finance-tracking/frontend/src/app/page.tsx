@@ -34,7 +34,7 @@ export default function HomePage() {
           </p>
 
           <div className="flex justify-center gap-4">
-            <Button className="bg-black text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-gray-800">
+            <Button className="bg-black text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-gray-800" onClick={() => router.push("/register")}>
               Get Started
             </Button>
             <Button
@@ -150,7 +150,7 @@ export default function HomePage() {
             Join thousands of users who trust Finora for their daily money management.
           </p>
           <Button className="bg-black text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-gray-800"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/register")}
           >
             Start Free Trial
           </Button>

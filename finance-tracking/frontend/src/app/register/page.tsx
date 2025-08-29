@@ -2,11 +2,13 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { api } from "@/lib/api"
+import { api, handleOAuth } from "@/lib/api"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { KeyRound } from "lucide-react"
+
 import {
     Card,
     CardHeader,
@@ -18,12 +20,18 @@ import {
 
 export default function RegisterPage() {
     const [form, setForm] = useState({ name: "", email: "", password: "" })
+    const [googleLoading, setGoogleLoading] = useState(false);
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
+
+    // const handleGoogleLogin = async () => {
+    //     setGoogleLoading(true)
+    //     window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/auth/google`
+    // }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -115,6 +123,34 @@ export default function RegisterPage() {
                             {loading ? "Creating Account..." : "Sign Up"}
                         </Button>
                     </form>
+
+                    {/* Divider */}
+                    <div className="relative my-2">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300" />
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    {/* Google Sign In Button */}
+                    <Button
+                        onClick={() => {
+                            setGoogleLoading(true);
+                            handleOAuth.googleAuth();
+                        }}
+                        disabled={googleLoading}
+                        variant="outline"
+                        className="w-full flex items-center gap-3 border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        {googleLoading ? (
+                            <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                        ) : (
+                            <KeyRound className="w-5 h-5" />
+                        )}
+                        {googleLoading ? "Redirecting to Google..." : "Continue with Google"}
+                    </Button>
                 </CardContent>
 
                 <CardFooter className="flex justify-center">

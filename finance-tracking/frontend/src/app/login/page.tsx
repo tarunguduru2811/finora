@@ -13,7 +13,7 @@ import {
     CardContent,
     CardFooter,
 } from "@/components/ui/card"
-import { api } from "@/lib/api"
+import { api, handleOAuth } from "@/lib/api"
 import { toast } from "sonner"
 import { KeyRound } from "lucide-react"
 
@@ -48,7 +48,7 @@ export default function LoginPage() {
     const handleGoogleLogin = async () => {
         setGoogleLoading(true)
         // Redirect to Google OAuth endpoint
-        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/google`
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/auth/google`
         // setUser({res.data.userDetails})
     }
 
@@ -118,7 +118,10 @@ export default function LoginPage() {
 
                     {/* Google Sign In Button */}
                     <Button
-                        onClick={handleGoogleLogin}
+                        onClick={() => {
+                            setGoogleLoading(true);
+                            handleOAuth.googleAuth();
+                        }}
                         disabled={googleLoading}
                         variant="outline"
                         className="w-full flex items-center gap-3 border-gray-300 hover:bg-gray-50 disabled:opacity-50"

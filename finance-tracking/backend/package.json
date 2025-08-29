@@ -23,7 +23,9 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.5",
     "passport": "^0.7.0",
+    "passport-gitlab2": "^5.0.0",
     "passport-google-oauth20": "^2.0.0",
+    "passport-twitter-oauth2": "^2.1.1",
     "pdfkit": "^0.17.1",
     "pg": "^8.16.3",
     "prisma": "^6.13.0"
