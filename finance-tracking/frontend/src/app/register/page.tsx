@@ -7,7 +7,8 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { KeyRound } from "lucide-react"
+import { FaGoogle } from 'react-icons/fa';
+import { FaGitlab, FaXTwitter } from 'react-icons/fa6';
 
 import {
     Card,
@@ -20,7 +21,9 @@ import {
 
 export default function RegisterPage() {
     const [form, setForm] = useState({ name: "", email: "", password: "" })
+    const [gitlabLoading, setGitlabLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
+    const [twitterLoading, setTwitterLoading] = useState(false)
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
@@ -28,10 +31,6 @@ export default function RegisterPage() {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
 
-    // const handleGoogleLogin = async () => {
-    //     setGoogleLoading(true)
-    //     window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/auth/google`
-    // }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -147,9 +146,51 @@ export default function RegisterPage() {
                         {googleLoading ? (
                             <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
                         ) : (
-                            <KeyRound className="w-5 h-5" />
+                            <FaGoogle className="w-5 h-5" />
                         )}
                         {googleLoading ? "Redirecting to Google..." : "Continue with Google"}
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setGitlabLoading(true);
+                            handleOAuth.gitlabAuth();
+                        }}
+                        className="w-full flex items-center gap-3 border-gray-300 hover:bg-gray-50 disabled:opacity-50 mt-2"
+                        disabled={gitlabLoading}
+                        variant={"outline"}
+                    >
+                        {
+                            gitlabLoading ?
+                                (
+                                    <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                                ) :
+                                (
+                                    <FaGitlab className="w-5 h-5" />
+                                )
+                        }
+                        {gitlabLoading ? "Redirecting to Gitlab..." : "Continue with Gitlab"}
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setTwitterLoading(true)
+                            handleOAuth.twitterAuth();
+                        }}
+                        className="w-full flex items-center gap-3 border-gray-300 hover:bg-gray-50 disabled:opacity-50 mt-2"
+                        disabled={twitterLoading}
+                        variant={"outline"}
+                    >
+                        {
+                            twitterLoading ?
+                                (
+                                    <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                                )
+                                : (
+                                    <FaXTwitter className="w-5 h-5" />
+                                )
+                        }
+                        {twitterLoading ? "Redirecting to Twitter..." : "Continue with Twitter"}
                     </Button>
                 </CardContent>
 

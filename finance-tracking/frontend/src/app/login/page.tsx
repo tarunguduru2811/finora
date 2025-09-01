@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation"
 import { useUserStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { FaGoogle } from 'react-icons/fa';
+import { FaGitlab } from 'react-icons/fa6';
+import { FaXTwitter } from 'react-icons/fa6';
+
 import {
     Card,
     CardHeader,
@@ -21,6 +25,8 @@ export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [loading, setLoading] = useState(false)
     const [googleLoading, setGoogleLoading] = useState(false)
+    const [gitlabLoading, setGitlabLoading] = useState(false);
+    const [twitterLoading, setTwitterLoading] = useState(false);
     const [password, setPassword] = useState("")
     const { setUser } = useUserStore()
     const user = useUserStore((state) => state.user)
@@ -129,9 +135,50 @@ export default function LoginPage() {
                         {googleLoading ? (
                             <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
                         ) : (
-                            <KeyRound className="w-5 h-5" />
+                            <FaGoogle className="w-5 h-5" />
                         )}
                         {googleLoading ? "Redirecting to Google..." : "Continue with Google"}
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setGitlabLoading(true);
+                            handleOAuth.gitlabAuth();
+                        }}
+                        disabled={gitlabLoading}
+                        variant={"outline"}
+                        className="w-full flex items-center gap-3 border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        {
+                            gitlabLoading ? (
+                                <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                            ) :
+                                (
+                                    <FaGitlab className="w-5 h-5" />
+                                )
+                        }
+                        {gitlabLoading ? "Redirecting to Gitlab.." : "Continue with Gitlab"}
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setTwitterLoading(true)
+                            handleOAuth.twitterAuth();
+                        }}
+                        className="w-full flex items-center gap-3 border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                        disabled={twitterLoading}
+                        variant={"outline"}
+                    >
+                        {
+                            twitterLoading ?
+                                (
+                                    <div className="w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                                )
+                                : (
+                                    <FaXTwitter className="w-5 h-5" />
+                                )
+                        }
+                        {twitterLoading ? "Redirecting to Twitter..." : "Continue with Twitter"}
                     </Button>
 
                     {/* Links */}

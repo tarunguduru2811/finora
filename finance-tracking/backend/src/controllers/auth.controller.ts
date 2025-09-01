@@ -1,4 +1,4 @@
-import {NextFunction, Request,Response} from "express"
+import { NextFunction, Request,Response} from "express"
 import { handleError } from "../utils/errors";
 import { error, profile } from "console";
 import prisma from "../db";
@@ -8,6 +8,8 @@ import crypto from "crypto"
 import nodemailer from "nodemailer"
 import passport from "passport"
 import {Strategy as GoogleStrategy} from "passport-google-oauth20"
+import {Strategy as GitLabStrategy} from "passport-gitlab2"
+import {Strategy as TwitterStrategy} from "passport-twitter"
 
 export async function register(req:Request,res:Response){
     try{
@@ -133,6 +135,67 @@ export async function resetPassword(req:Request,res:Response){
     }
 }
 
+passport.use(new TwitterStrategy({
+    consumerKey:process.env.TWITTER_CLIENT_ID!,
+    consumerSecret:process.env.TWITTER_CLIENT_SECRET!,
+    callbackURL:process.env.TWITTER_CALLBACK_URL!,
+   },
+   async (accessToken:string,refreshToken:string,profile:any,done:(err:any,user?:any)=>void)=>{
+    try{
+        let user = await prisma.user.findUnique({
+            where:{providerId:profile.id}
+        })
+
+        if(!user){
+            user = await prisma.user.create({
+                data:{
+                        email:profile.emails?.[0].value || "",
+                        name:profile.displayName,
+                        provider:"twitter",
+                        providerId:profile.id,
+                        password:"" //TODO:handle password for oauth users
+                }
+            })
+        }
+        return done(null,user)
+    }catch(err){
+        return done(err,null);
+    }
+   }
+
+))
+
+passport.use(new GitLabStrategy({
+    clientID:process.env.GITLAB_CLIENT_ID!,
+    clientSecret:process.env.GITLAB_CLIENT_SECRET!,
+    callbackURL:process.env.GITLAB_CALLBACK_URL!,
+   },
+   async (accessToken:string,refreshToken:string,profile:any,
+    done:(error:any,user?:any)=>void)  => {
+        try{
+            let user = await prisma.user.findUnique({
+                where:{providerId:profile.id}
+            })
+
+            if(!user){
+                user = await prisma.user.create({
+                    data:{
+                        email:profile.emails?.[0].value || "",
+                        name:profile.displayName,
+                        provider:"gitlab",
+                        providerId:profile.id,
+                        password:"" //TODO:handle password for oauth users
+                    }
+                })                
+            }
+            return done(null,user)
+        }catch(err){
+            return done(err,null);
+        }
+    }
+   )
+)
+
 passport.use(new GoogleStrategy({
     clientID:process.env.GOOGLE_CLIENT_ID!,
     clientSecret:process.env.GOOGLE_CLIENT_SECRET!,
@@ -176,10 +239,10 @@ export function googleAuth(req: Request, res: Response) {
     passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
 }
 
-export function googleAuthCallback(req: Request, res: Response, next: NextFunction) {
-    passport.authenticate("google", { failureRedirect: "/login" }, (err, user) => {
-        if (err) return next(err);
-        if (!user) return res.redirect("/login");
+export function googleAuthCallback(req: Request, res: Response) {
+    passport.authenticate("google", { failureRedirect: "/api/auth/login" }, (err, user) => {
+        // if (err) return next(err);
+        if (!user) return res.redirect("/api/auth/login");
         
         const token = jwt.sign(
             { userId: user.id },
@@ -193,8 +256,60 @@ export function googleAuthCallback(req: Request, res: Response, next: NextFuncti
             sameSite: "lax",
         });
         res.redirect(`${process.env.CLIENT_URL}/dashboard`);
-    })(req, res, next);
+    })(req, res);
 }
+
+export function gitlabAuth(req:Request,res:Response){
+    passport.authenticate("gitlab",{scope:["read_user"]})(req,res);
+}
+
+export function gitlabAuthCallback(req:Request,res:Response){
+    passport.authenticate("gitlab",{failureRedirect:"/login"},(err:any,user:any)=>{
+        // if(err) return next(err);
+        if(!user) return res.redirect("/api/auth/login");
+
+        const token = jwt.sign(
+            {userId:user.id},
+            process.env.JWT_SECRET!,
+            {expiresIn:"7d"}
+        )
+
+        res.cookie("token",token,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === "production",
+            sameSite:"lax",
+        })
+
+        res.redirect(`${process.env.CLIENT_URL}/dashboard`)
+    })(req,res)
+}
+
+export function twitterAuth(req:Request,res:Response){
+    passport.authenticate("twitter")(req,res);
+}
+
+export function twitterAuthCallback(req: Request, res: Response, next:  NextFunction) {
+    passport.authenticate("twitter", { failureRedirect: "/api/auth/login" }, (err: any, user: any) => {
+      if (err) return next(err); // ✅ Now this works
+      if (!user) return res.redirect("/login");
+  
+      const token = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_SECRET!,
+        { expiresIn: "7d" }
+      );
+  
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
+  
+      res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+    })(req, res, next); // ✅ MUST INCLUDE `next`
+  }
+
+
 
 export async function googleAuthenticate(req:Request,res:Response){
     const token = req.cookies.token;
