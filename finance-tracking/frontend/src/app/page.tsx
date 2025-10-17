@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+
 export default function HomePage() {
   const router = useRouter()
   return (
@@ -15,14 +16,14 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="space-y-6 max-w-3xl"
+          className="space-y-5 max-w-3xl"
         >
           <Image
-            src="https://sdmntprcentralus.oaiusercontent.com/files/00000000-a154-61f5-bd5f-978473d4b4c7/raw?se=2025-08-21T07%3A19%3A50Z&sp=r&sv=2024-08-04&sr=b&scid=ef1958c5-70fd-5317-980f-6addbbd99235&skoid=0da8417a-a4c3-4a19-9b05-b82cee9d8868&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-08-20T20%3A54%3A23Z&ske=2025-08-21T20%3A54%3A23Z&sks=b&skv=2024-08-04&sig=9SoAli%2BgeT16iEwNJRPjWMtSREoH88Z9t2SZJDMhmXI%3D"
+            src="/assets/Finora.png"
             alt="Finora Logo"
-            width={250}
+            width={300}
             height={250}
-            className="mx-auto"
+            className="mx-auto mb-[-15px]"
           />
 
           <h1 className="text-5xl md:text-6xl font-bold leading-tight">

@@ -10,6 +10,9 @@ import passport from "passport"
 import {Strategy as GoogleStrategy} from "passport-google-oauth20"
 import {Strategy as GitLabStrategy} from "passport-gitlab2"
 import {Strategy as TwitterStrategy} from "passport-twitter"
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 export async function register(req:Request,res:Response){
     try{
@@ -239,7 +242,7 @@ export function googleAuth(req: Request, res: Response) {
     passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
 }
 
-export function googleAuthCallback(req: Request, res: Response) {
+export function googleAuthCallback(req: Request, res: Response,next: NextFunction) {
     passport.authenticate("google", { failureRedirect: "/api/auth/login" }, (err, user) => {
         // if (err) return next(err);
         if (!user) return res.redirect("/api/auth/login");
@@ -256,14 +259,14 @@ export function googleAuthCallback(req: Request, res: Response) {
             sameSite: "lax",
         });
         res.redirect(`${process.env.CLIENT_URL}/dashboard`);
-    })(req, res);
+    })(req, res,next);
 }
 
 export function gitlabAuth(req:Request,res:Response){
     passport.authenticate("gitlab",{scope:["read_user"]})(req,res);
 }
 
-export function gitlabAuthCallback(req:Request,res:Response){
+export function gitlabAuthCallback(req:Request,res:Response,next: NextFunction){
     passport.authenticate("gitlab",{failureRedirect:"/login"},(err:any,user:any)=>{
         // if(err) return next(err);
         if(!user) return res.redirect("/api/auth/login");
@@ -281,15 +284,23 @@ export function gitlabAuthCallback(req:Request,res:Response){
         })
 
         res.redirect(`${process.env.CLIENT_URL}/dashboard`)
-    })(req,res)
+    })(req,res,next)
 }
 
 export function twitterAuth(req:Request,res:Response){
-    passport.authenticate("twitter")(req,res);
-}
+    try{
+         console.log("Called twitterAuth")
+         passport.authenticate("twitter")(req,res);
+    }catch(err){
+        console.log("Error in while authenticating using twitter",err)
+    }
+    }
+   
 
 export function twitterAuthCallback(req: Request, res: Response, next:  NextFunction) {
+    console.log("Twitter Callback Called")
     passport.authenticate("twitter", { failureRedirect: "/api/auth/login" }, (err: any, user: any) => {
+         console.log("NEXT IS:", typeof next);
       if (err) return next(err); // ✅ Now this works
       if (!user) return res.redirect("/login");
   

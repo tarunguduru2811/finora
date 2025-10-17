@@ -23,7 +23,7 @@ export default function RegisterPage() {
     const [form, setForm] = useState({ name: "", email: "", password: "" })
     const [gitlabLoading, setGitlabLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
-    const [twitterLoading, setTwitterLoading] = useState(false)
+    // const [twitterLoading, setTwitterLoading] = useState(false)
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
@@ -172,7 +172,7 @@ export default function RegisterPage() {
                         {gitlabLoading ? "Redirecting to Gitlab..." : "Continue with Gitlab"}
                     </Button>
 
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             setTwitterLoading(true)
                             handleOAuth.twitterAuth();
@@ -191,7 +191,7 @@ export default function RegisterPage() {
                                 )
                         }
                         {twitterLoading ? "Redirecting to Twitter..." : "Continue with Twitter"}
-                    </Button>
+                    </Button> */}
                 </CardContent>
 
                 <CardFooter className="flex justify-center">

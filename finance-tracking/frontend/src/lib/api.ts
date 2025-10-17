@@ -27,13 +27,13 @@ export const recurringRuleApis =  {
 
 export const handleOAuth = {
     googleAuth : () => {
-        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/auth/google`
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/google`
     },
     gitlabAuth : () => {
-        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/auth/gitlab`
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/gitlab`
     },
     twitterAuth:() =>{
-        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/auth/twitter`
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/twitter`
     }
 
 }

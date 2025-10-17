@@ -34,8 +34,8 @@ export function Sidebar() {
         <div className="h-screen w-64 bg-white border-r flex flex-col">
             {/* Logo */}
             <div className="h-16 flex items-center justify-center font-bold text-xl border-b">
-                <Image width={150} height={50} alt="Logo"
-                    src="https://sdmntprcentralus.oaiusercontent.com/files/00000000-a154-61f5-bd5f-978473d4b4c7/raw?se=2025-08-21T07%3A19%3A50Z&sp=r&sv=2024-08-04&sr=b&scid=ef1958c5-70fd-5317-980f-6addbbd99235&skoid=0da8417a-a4c3-4a19-9b05-b82cee9d8868&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-08-20T20%3A54%3A23Z&ske=2025-08-21T20%3A54%3A23Z&sks=b&skv=2024-08-04&sig=9SoAli%2BgeT16iEwNJRPjWMtSREoH88Z9t2SZJDMhmXI%3D"
+                <Image width={180} height={50} alt="Logo"
+                    src="/assets/Finora.png"
                 />
             </div>
 

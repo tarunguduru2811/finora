@@ -26,7 +26,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false)
     const [googleLoading, setGoogleLoading] = useState(false)
     const [gitlabLoading, setGitlabLoading] = useState(false);
-    const [twitterLoading, setTwitterLoading] = useState(false);
+    // const [twitterLoading, setTwitterLoading] = useState(false);
     const [password, setPassword] = useState("")
     const { setUser } = useUserStore()
     const user = useUserStore((state) => state.user)
@@ -160,7 +160,7 @@ export default function LoginPage() {
                         {gitlabLoading ? "Redirecting to Gitlab.." : "Continue with Gitlab"}
                     </Button>
 
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             setTwitterLoading(true)
                             handleOAuth.twitterAuth();
@@ -179,7 +179,7 @@ export default function LoginPage() {
                                 )
                         }
                         {twitterLoading ? "Redirecting to Twitter..." : "Continue with Twitter"}
-                    </Button>
+                    </Button> */}
 
                     {/* Links */}
                     <div className="text-sm text-gray-700 text-center space-y-2">
