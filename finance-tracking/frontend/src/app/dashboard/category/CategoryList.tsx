@@ -48,7 +48,9 @@ export default function CategoryList() {
 
             {
                 selectedCategory && (
-                    <CategoryTransaction categoryId={selectedCategory} />
+                   <div className="overflow-x-auto">
+                     <CategoryTransaction categoryId={selectedCategory} />
+                   </div>
                 )
             }
         </div>

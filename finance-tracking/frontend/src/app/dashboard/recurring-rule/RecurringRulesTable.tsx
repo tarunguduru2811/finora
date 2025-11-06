@@ -37,7 +37,8 @@ export default function RecurringRulesTable({ rules, refresh }: Props) {
         refresh();
     }
     return (
-        <Table>
+      <div className="overflow-x-auto">
+          <Table>
             <TableHeader>
                 <TableRow>
                     <TableHead>Name</TableHead>
@@ -81,5 +82,6 @@ export default function RecurringRulesTable({ rules, refresh }: Props) {
                 }
             </TableBody>
         </Table>
+      </div>
     )
 }

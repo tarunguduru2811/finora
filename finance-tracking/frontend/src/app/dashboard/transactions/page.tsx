@@ -78,7 +78,7 @@ export default function TransactionPage() {
 
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 mt-7">
             <Card>
                 <CardHeader>
                     <CardTitle>Filters</CardTitle>
@@ -104,8 +104,10 @@ export default function TransactionPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Transactions</CardTitle>
-                    <CardContent>
-                        <TransactionTable transactions={transactions} categories={categories} fetchTransactions={fetchTransactions} />
+                    <CardContent className="overflow-x-auto">
+                        <TransactionTable transactions={transactions}
+                        categories={categories} fetchTransactions={fetchTransactions}
+                        />
                     </CardContent>
                 </CardHeader>
             </Card>

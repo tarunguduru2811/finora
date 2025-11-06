@@ -38,17 +38,19 @@ export default function RecurringRulePage() {
     }
     const onRefresh = () => fetchAll()
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 mt-7">
             <Card>
                 <CardHeader className="flex items-center justify-between">
                     <CardTitle>Recurring Rules</CardTitle>
                     <Button onClick={() => setOpenForm(true)}>+ Add Rule</Button>
                 </CardHeader>
                 <CardContent>
-                    <RecurringRulesTable
+                    <div className="overflow-x-auto">
+                        <RecurringRulesTable
                         rules={rules}
                         refresh={onRefresh}
                     />
+                    </div>
                 </CardContent>
             </Card>
             <RecurringForm

@@ -58,7 +58,7 @@ export default function BudgetPage() {
     }
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 mt-7">
             <Card>
                 <CardHeader className="flex justify-between items-center">
                     <CardTitle>Budgets</CardTitle>

@@ -24,25 +24,27 @@ export default function TransactionTable({ transactions, categories, fetchTransa
             console.error("Error in Deleting Transactions", err);
         }
     }
+
     return (
         <>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Account</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Merchant</TableHead>
-                        <TableHead>Notes</TableHead>
-                        <TableHead>Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {
-                        transactions.map((tx) => (
-                            <TableRow>
+            {/* Scrollable container */}
+            <div className="w-full overflow-x-auto">
+                <Table className="min-w-[900px]">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Account</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Amount</TableHead>
+                            <TableHead>Category</TableHead>
+                            <TableHead>Merchant</TableHead>
+                            <TableHead>Notes</TableHead>
+                            <TableHead>Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {transactions.map((tx) => (
+                            <TableRow key={tx.id}>
                                 <TableCell>{new Date(tx.date).toLocaleDateString()}</TableCell>
                                 <TableCell>{tx.account?.name}</TableCell>
                                 <TableCell>{tx.type}</TableCell>
@@ -50,35 +52,44 @@ export default function TransactionTable({ transactions, categories, fetchTransa
                                 <TableCell>{tx.category?.name || "-"}</TableCell>
                                 <TableCell>{tx.merchant}</TableCell>
                                 <TableCell>{tx.notes}</TableCell>
-                                <TableCell className="flex gap-2">
-                                    <Button variant="outline" onClick={() => {
-                                        setTransactionEditing(tx);
-                                        setEditOpen(true);
-                                    }}>Edit</Button>
-
-                                    <Button variant="destructive" onClick={() => {
-                                        handleDeleteTransactions(tx.id);
-                                    }}>Delete</Button>
+                                <TableCell className="flex gap-2 flex-wrap">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            setTransactionEditing(tx);
+                                            setEditOpen(true);
+                                        }}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => handleDeleteTransactions(tx.id)}
+                                    >
+                                        Delete
+                                    </Button>
                                 </TableCell>
                             </TableRow>
-                        ))
-                    }
-                </TableBody>
-            </Table>
-            {
-                transactionEditing && (
-                    <EditTransactionModal
-                        transaction={transactionEditing}
-                        categories={categories}
-                        open={editOpen}
-                        onClose={() => setEditOpen(false)}
-                        onSave={() => {
-                            setEditOpen(false)
-                            setTransactionEditing(null)
-                        }}
-                    />
-                )
-            }
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+
+            {/* Edit Transaction Modal */}
+            {transactionEditing && (
+                <EditTransactionModal
+                    transaction={transactionEditing}
+                    categories={categories}
+                    open={editOpen}
+                    onClose={() => setEditOpen(false)}
+                    onSave={() => {
+                        setEditOpen(false)
+                        setTransactionEditing(null)
+                    }}
+                />
+            )}
         </>
     )
 }

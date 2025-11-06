@@ -12,7 +12,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      DATABASE_URL: postgresql://postgres.gaikebsqzivcrechyxac:Tarun@2811@aws-0-us-east-2.pooler.supabase.com:5432/postgres
+      DATABASE_URL: postgresql://postgres.gaikebsqzivcrechyxac:T2a8r1u1n2002@aws-0-us-east-2.pooler.supabase.com:5432/postgres
   frontend:
     build:
       context: ./frontend
