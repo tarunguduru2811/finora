@@ -8,7 +8,7 @@ import { useState } from "react"
 import axios from "axios"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
-import { useUserStore } from "@/lib/store"
+import { useUserStore } from "@/lib/store";
 import { api } from "@/lib/api"
 import Chart from "chart.js/auto"
 
@@ -19,15 +19,18 @@ interface Props {
     openDialog: () => void
 }
 export default function MonthlyReportCard({ open, onClose, openDialog }: Props) {
-    const user = useUserStore.getState().user;
     const [date, setDate] = useState<number>(new Date().getMonth() + 1);
     const [year, setYear] = useState<number>(new Date().getFullYear())
 
     const handleDownload = async () => {
+         const userID = useUserStore.getState().user.id;
+
         try {
+            //console.log("User ID in MonthlyReport",userID);
             const res = await api.get(
-                `/transactions/report/${useUserStore.getState().user?.id}/${date}/${year}`
+                `/transactions/report/${userID}/${date}/${year}`
             )
+            console.log("Handle Download Response",res);
             const { totalExpense, totalIncome, netSavings, categoryTotals } = res.data
 
             const canvas = document.createElement("canvas")
@@ -67,14 +70,14 @@ export default function MonthlyReportCard({ open, onClose, openDialog }: Props) 
             doc.text(`Net Savings:$${netSavings.toFixed(2)}`, 20, 60);
 
 
-            // doc.addImage(chartImage, "PNG", 20, 70, 160, 100)
+            //doc.addImage(chartImage, "PNG", 20, 70, 160, 100)
 
-            autoTable(doc, {
-                startY: 110,
-                head: [["Category", "Amount $"]],
-                //body: Object.entries(categoryTotals).map(([cat, amt]) => [cat, amt]),
+            // autoTable(doc, {
+            //     startY: 110,
+            //     head: [["Category", "Amount $"]],
+            //     //body: Object.entries(categoryTotals).map(([cat, amt]) => [cat, amt]),
 
-            })
+            // })
 
             doc.save(`Financial_Report_${date}_${year}.pdf`)
 
@@ -111,7 +114,7 @@ export default function MonthlyReportCard({ open, onClose, openDialog }: Props) 
                     <Input type="number" value={year} onChange={(e) => setYear(parseInt(e.target.value))} />
                 </div>
                 <div className="flex justify-center items-center gap-2">
-                    <Button onClick={handleDownload} >Submit</Button>
+                    <Button onClick={()=>handleDownload()} >Submit</Button>
                 </div>
             </DialogContent>
         </Dialog>

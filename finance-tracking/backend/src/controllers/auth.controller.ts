@@ -258,7 +258,7 @@ export function googleAuthCallback(req: Request, res: Response,next: NextFunctio
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
         });
-        res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+        res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
     })(req, res,next);
 }
 
@@ -323,7 +323,9 @@ export function twitterAuthCallback(req: Request, res: Response, next:  NextFunc
 
 
 export async function googleAuthenticate(req:Request,res:Response){
-    const token = req.cookies.token;
+    const authHeader = req.headers["authorization"]
+    const token = authHeader && authHeader.split(' ')[1] || req.cookies.token;
+    console.log("Token in me route....",token);
     if(!token) return res.status(401).json({error:"Not Authenticated"})
     console.log("Token....",token)
     const payload = jwt.verify(token,process.env.JWT_SECRET!) as any;

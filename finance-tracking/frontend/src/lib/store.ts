@@ -23,28 +23,34 @@ interface AccountState {
     addAccount : (name:String,currency:String) => Promise<void>
 }
 
-export const useUserStore = create<UserState>((set)=>(
-        {
-            user:null,
-            token:null,
-            setUser:(user)=>set({user}),
-            login: async (email, password) => {
-                const res = await api.post("/auth/login", { email, password });
-                const { user ,token} = res.data; // assuming your API sends { user, token }
-                set({ user ,token});
-                localStorage.setItem("token",token)
-              },
-              fetchUser: async () => {
-                try {
-                  const res = await api.get("/auth/me");
-                  set({ user: res.data.user });
-                  localStorage.setItem("token",res.data.token)
-                } catch {
-                  set({ user: null, token: null });
-                }
-            },
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      setUser: (user) => set({ user }),
+      login: async (email, password) => {
+        const res = await api.post("/auth/login", { email, password });
+        const { user, token } = res.data;
+        set({ user, token });
+        localStorage.setItem("token", token);
+      },
+      fetchUser: async () => {
+        try {
+          const res = await api.get("/auth/me");
+          set({ user: res.data.user });
+        } catch {
+          set({ user: null, token: null });
         }
-))
+      },
+    }),
+    {
+      name: "user-storage", // key in localStorage
+      partialize: (state) => ({ user: state.user, token: state.token }), // only store what you need
+    }
+  )
+);
+
 
 export const useAccountStore = create<AccountState>((set)=>({
     accounts:[],
