@@ -52,7 +52,7 @@ export default function RecurringRulesTable({ rules, refresh }: Props) {
             <TableBody>
                 {
                     rules.map((rule) => (
-                        <TableRow>
+                        <TableRow key={rule.id}>
                             <TableCell>{getRuleName(rule)}</TableCell>
                             <TableCell>{getRuleType(rule)}</TableCell>
                             <TableCell>{rule.cron}</TableCell>

@@ -127,7 +127,7 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 className="p-6 bg-gray-50 rounded-2xl shadow"
               >
-                <p className="italic text-gray-800 mb-4">"{t.feedback}"</p>
+                <p className="italic text-gray-800 mb-4">&quot;{t.feedback}&quot;</p>
                 <h4 className="font-semibold text-black">- {t.name}</h4>
               </motion.div>
             ))}

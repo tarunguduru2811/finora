@@ -9,7 +9,7 @@ import { useState } from "react"
 import { toast } from "sonner";
 
 
-export default function forgotPassword() {
+export default function ForgotPassword() {
     const [email, setEmail] = useState("");
 
     const handleSubmit = async () => {

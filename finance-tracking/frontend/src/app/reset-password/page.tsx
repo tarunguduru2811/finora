@@ -5,17 +5,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { api } from "@/lib/api";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner";
 
 
-export default function resetPassword() {
-    const searchParams = useSearchParams();
+export default function ResetPassword() {
+    // const searchParams = useSearchParams();
     const [password, setPassword] = useState("");
+    const [token,setToken] = useState<string|null>(null)
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    // Grab token from URL manually in client
+     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const t = params.get("token");
+        setToken(t);
+    }, []);
     const handleSubmit = async () => {
         try {
-            const token = searchParams.get("token")
+            // const token = searchParams.get("token")
             if (password !== confirmPassword) {
                 toast("Password and Confirm Password Must be Same")
                 return;

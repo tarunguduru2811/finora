@@ -23,7 +23,7 @@ export default function MonthlyReportCard({ open, onClose, openDialog }: Props) 
     const [year, setYear] = useState<number>(new Date().getFullYear())
 
     const handleDownload = async () => {
-         const userID = useUserStore.getState().user.id;
+         const userID = useUserStore.getState().user?.id;
 
         try {
             //console.log("User ID in MonthlyReport",userID);

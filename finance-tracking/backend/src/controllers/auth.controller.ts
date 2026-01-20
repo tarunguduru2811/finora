@@ -9,7 +9,7 @@ import nodemailer from "nodemailer"
 import passport from "passport"
 import {Strategy as GoogleStrategy} from "passport-google-oauth20"
 import {Strategy as GitLabStrategy} from "passport-gitlab2"
-import {Strategy as TwitterStrategy} from "passport-twitter"
+// import {Strategy as TwitterStrategy} from "passport-twitter"
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -138,35 +138,35 @@ export async function resetPassword(req:Request,res:Response){
     }
 }
 
-passport.use(new TwitterStrategy({
-    consumerKey:process.env.TWITTER_CLIENT_ID!,
-    consumerSecret:process.env.TWITTER_CLIENT_SECRET!,
-    callbackURL:process.env.TWITTER_CALLBACK_URL!,
-   },
-   async (accessToken:string,refreshToken:string,profile:any,done:(err:any,user?:any)=>void)=>{
-    try{
-        let user = await prisma.user.findUnique({
-            where:{providerId:profile.id}
-        })
+// passport.use(new TwitterStrategy({
+//     consumerKey:process.env.TWITTER_CLIENT_ID!,
+//     consumerSecret:process.env.TWITTER_CLIENT_SECRET!,
+//     callbackURL:process.env.TWITTER_CALLBACK_URL!,
+//    },
+//    async (accessToken:string,refreshToken:string,profile:any,done:(err:any,user?:any)=>void)=>{
+//     try{
+//         let user = await prisma.user.findUnique({
+//             where:{providerId:profile.id}
+//         })
 
-        if(!user){
-            user = await prisma.user.create({
-                data:{
-                        email:profile.emails?.[0].value || "",
-                        name:profile.displayName,
-                        provider:"twitter",
-                        providerId:profile.id,
-                        password:"" //TODO:handle password for oauth users
-                }
-            })
-        }
-        return done(null,user)
-    }catch(err){
-        return done(err,null);
-    }
-   }
+//         if(!user){
+//             user = await prisma.user.create({
+//                 data:{
+//                         email:profile.emails?.[0].value || "",
+//                         name:profile.displayName,
+//                         provider:"twitter",
+//                         providerId:profile.id,
+//                         password:"" //TODO:handle password for oauth users
+//                 }
+//             })
+//         }
+//         return done(null,user)
+//     }catch(err){
+//         return done(err,null);
+//     }
+//    }
 
-))
+// ))
 
 passport.use(new GitLabStrategy({
     clientID:process.env.GITLAB_CLIENT_ID!,
@@ -287,14 +287,14 @@ export function gitlabAuthCallback(req:Request,res:Response,next: NextFunction){
     })(req,res,next)
 }
 
-export function twitterAuth(req:Request,res:Response){
-    try{
-         console.log("Called twitterAuth")
-         passport.authenticate("twitter")(req,res);
-    }catch(err){
-        console.log("Error in while authenticating using twitter",err)
-    }
-    }
+// export function twitterAuth(req:Request,res:Response){
+//     try{
+//          console.log("Called twitterAuth")
+//          passport.authenticate("twitter")(req,res);
+//     }catch(err){
+//         console.log("Error in while authenticating using twitter",err)
+//     }
+//     }
    
 
 export function twitterAuthCallback(req: Request, res: Response, next:  NextFunction) {

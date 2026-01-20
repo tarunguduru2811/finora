@@ -38,7 +38,7 @@ export default function BudgetTable({ budgets, onDelete, categories }: any) {
                 <TableBody>
                     {
                         budgets.map((budget: any) => (
-                            <TableRow>
+                            <TableRow key={budget.id}>
                                 <TableCell>{budget.name}</TableCell>
                                 <TableCell>{budget.category}</TableCell>
                                 <TableCell>${budget.amount}</TableCell>

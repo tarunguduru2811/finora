@@ -20,7 +20,7 @@ interface UserState{
 interface AccountState {
     accounts:any [],
     fetchAccounts : () => Promise<void>,
-    addAccount : (name:String,currency:String) => Promise<void>
+    addAccount : (name:string,currency:string) => Promise<void>
 }
 
 export const useUserStore = create<UserState>()(
