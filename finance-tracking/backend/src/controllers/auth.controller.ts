@@ -323,26 +323,43 @@ export function twitterAuthCallback(req: Request, res: Response, next:  NextFunc
 
 
 
-export async function googleAuthenticate(req:Request,res:Response){
-    const authHeader = req.headers["authorization"]
-    const token = authHeader && authHeader.split(' ')[1] || req.cookies.token;
-    console.log("Token in me route....",token);
-    if(!token) return res.status(401).json({error:"Not Authenticated"})
-    console.log("Token....",token)
-    const payload = jwt.verify(token,process.env.JWT_SECRET!) as any;
-    console.log("Payload:",payload);
-    const userId = payload.userId;
+export async function googleAuthenticate(req: Request, res: Response) {
+    try {
+        const authHeader = req.headers.authorization;
+        const token =
+            authHeader?.startsWith("Bearer ")
+                ? authHeader.split(" ")[1]
+                : req.cookies?.token;
 
-    const user = await prisma.user.findUnique({
-        where:{id:userId}
-    })
+        if (!token) {
+            return res.status(401).json({ error: "Not Authenticated" });
+        }
 
-    const {password,...safeUser} = user as any;
-    const userDetails = {
-        userId:user?.id,
-        name:user?.name,
-        email:user?.email
+        const payload = jwt.verify(
+            token,
+            process.env.JWT_SECRET as string
+        ) as any;
+
+        const user = await prisma.user.findUnique({
+            where: { id: payload.userId },
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const userDetails = {
+            userId: user.id,
+            name: user.name,
+            email: user.email,
+        };
+
+        return res.json({ userDetails, token });
+
+    } catch (error) {
+        console.error("Error in /auth/me:", error);
+        return res.status(401).json({ error: "Invalid or expired token" });
     }
-    return res.json({userDetails,token});
 }
+
 
