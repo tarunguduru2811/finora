@@ -244,9 +244,9 @@ export function googleAuth(req: Request, res: Response) {
 }
 
 export function googleAuthCallback(req: Request, res: Response,next: NextFunction) {
-    passport.authenticate("google", { failureRedirect: "/api/auth/login" }, (err, user) => {
+    passport.authenticate("google", { failureRedirect: `${process.env.CLIENT_URL}/login` }, (err, user) => {
         // if (err) return next(err);
-        if (!user) return res.redirect("/api/auth/login");
+        if (!user) return res.redirect(`${process.env.CLIENT_URL}/login`);
         
         const token = jwt.sign(
             { userId: user.id },
@@ -268,9 +268,9 @@ export function gitlabAuth(req:Request,res:Response){
 }
 
 export function gitlabAuthCallback(req:Request,res:Response,next: NextFunction){
-    passport.authenticate("gitlab",{failureRedirect:"/login"},(err:any,user:any)=>{
+    passport.authenticate("gitlab",{failureRedirect:`${process.env.CLIENT_URL}/login`},(err:any,user:any)=>{
         // if(err) return next(err);
-        if(!user) return res.redirect("/api/auth/login");
+        if(!user) return res.redirect(`${process.env.CLIENT_URL}/login`);
 
         const token = jwt.sign(
             {userId:user.id},
