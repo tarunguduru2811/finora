@@ -1,51 +1,35 @@
 "use client"
 import { api } from "@/lib/api";
 import { useUserStore } from "@/lib/store";
-import {useRouter,useSearchParams} from "next/navigation"
-import {useEffect, useState} from "react"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function OAuthCallback(){
-    const router = useRouter();
-    // const searchParams  = useSearchParams();
-    // const token = searchParams.get("token");
-    const [token,setToken] = useState<string | null>(null)
-    const {setUser} = useUserStore();
-
-      // Grab token from URL manually in client
-        useEffect(() => {
-            const params = new URLSearchParams(window.location.search);
-            const t = params.get("token");
-            localStorage.setItem("token",JSON.stringify(t));
-            setToken(t);
-        }, []);
+export default function OAuthCallback() {
+  const router = useRouter();
+  const { setUser } = useUserStore();
 
   useEffect(() => {
-  if (!token) return; // 🚨 IMPORTANT
+    const fetchMe = async () => {
+      try {
+        const res = await api.get("/auth/me", {
+          withCredentials: true,
+        });
 
-  const handleOAuthCallback = async () => {
-    try {
-      const res = await api.get("/auth/me");
+        setUser({
+          id: res.data.userDetails.userId,
+          name: res.data.userDetails.name,
+          email: res.data.userDetails.email,
+        });
 
-      const user = {
-        id: res.data.userDetails.userId,
-        name: res.data.userDetails.name,
-        email: res.data.userDetails.email,
-      };
+        router.push("/dashboard");
+      } catch (err) {
+        console.error("OAuth callback error", err);
+        router.push("/login?error=oauth_failed");
+      }
+    };
 
-      setUser(user);
-      router.push("/dashboard");
-    } catch (err) {
-      console.error("Error in OAuth callback", err);
-      router.push("/login?error=oauth_failed");
-    }
-  };
+    fetchMe();
+  }, [router, setUser]);
 
-  handleOAuthCallback();
-}, [token]);
-
-    return(
-        <div>
-            <p>Signing in With Google</p>
-        </div>
-    )
+  return <p>Signing in with Google…</p>;
 }
