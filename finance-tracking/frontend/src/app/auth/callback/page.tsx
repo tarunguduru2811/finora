@@ -21,7 +21,7 @@ export default function OAuthCallback(){
     useEffect(()=>{
         const handleOAuthCallback = async () => {
             try{
-                const res = await api.get(`/auth/me`,{
+                const res = await api.get(`/api/auth/me`,{
                     headers:{Authorization:`Bearer ${token}`}
                 })
 
