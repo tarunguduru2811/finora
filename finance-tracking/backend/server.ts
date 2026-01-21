@@ -18,9 +18,10 @@ const app = express();
 // Enable CORS with credentials
 app.use(cors({
     origin: 'https://finora-pied.vercel.app',  // Your exact frontend origin
-    // credentials: true,                // Allow credentials
-    // methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    // allowedHeaders: ['Content-Type', 'Authorization']
+    credentials: true,                // Allow credentials
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+    
   }));
   
 //   // Handle preflight requests
