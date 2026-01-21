@@ -234,9 +234,9 @@ export async function getMonthlyReport(req: Request, res: Response) {
     try {
       const { userId, year, month } = req.params;
   
-      const parsedUserId = parseInt(userId);
-      const parsedYear = parseInt(year);
-      const parsedMonth = parseInt(month);
+      const parsedUserId = parseInt(String(userId));
+      const parsedYear = parseInt(String(year));
+      const parsedMonth = parseInt(String(month));
   
       const transactions = await prisma.transaction.findMany({
         where: {
