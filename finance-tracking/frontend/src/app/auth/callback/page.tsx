@@ -19,35 +19,33 @@ export default function OAuthCallback(){
             setToken(t);
         }, []);
 
-    useEffect(()=>{
-        const handleOAuthCallback = async () => {
-            try{
-                   const res = await api.get(`/auth/me`,{
-                    headers:{Authorization:`Bearer ${token}`}
-                })
+  useEffect(() => {
+  if (!token) return; // 🚨 IMPORTANT
 
-                
-                console.log("USer details from me route",{
-                    id:res.data.userDetails.userId,
-                    name:res.data.userDetails.name,
-                    email:res.data.userDetails.email
-                });
-                const user =  {
-                    id:res.data.userDetails.userId,
-                    name:res.data.userDetails.name,
-                    email:res.data.userDetails.email
-                };
-                setUser(user);
-                console.log("User ID in callback",useUserStore.getState().user?.id);
-                router.push("/dashboard");
-            }catch(err){
-                console.log("Error in Handling OAuth Callback",err);
-                 router.push("/login?error=oauth_failed");
-            }
-        }
+  const handleOAuthCallback = async () => {
+    try {
+      const res = await api.get(`/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        handleOAuthCallback();
-    },[token,router,setUser])
+      const user = {
+        id: res.data.userDetails.userId,
+        name: res.data.userDetails.name,
+        email: res.data.userDetails.email,
+      };
+
+      setUser(user);
+      router.push("/dashboard");
+    } catch (err) {
+      console.error("Error in OAuth callback", err);
+      router.push("/login?error=oauth_failed");
+    }
+  };
+
+  handleOAuthCallback();
+}, [token]);
 
     return(
         <div>
