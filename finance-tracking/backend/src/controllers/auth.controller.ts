@@ -257,7 +257,7 @@ export function googleAuthCallback(req: Request, res: Response,next: NextFunctio
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         });
         res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
     })(req, res,next);
