@@ -8,6 +8,7 @@ import crypto from "crypto"
 import nodemailer from "nodemailer"
 import passport from "passport"
 import {Strategy as GoogleStrategy} from "passport-google-oauth20"
+// @ts-ignore
 import {Strategy as GitLabStrategy} from "passport-gitlab2"
 // import {Strategy as TwitterStrategy} from "passport-twitter"
 import dotenv from 'dotenv';
