@@ -17,7 +17,7 @@ dotenv.config();
 const app = express();
 // Enable CORS with credentials
 app.use(cors({
-    origin: 'http://localhost:3000',  // Your exact frontend origin
+    origin: 'https://finora-pied.vercel.app',  // Your exact frontend origin
     credentials: true,                // Allow credentials
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
