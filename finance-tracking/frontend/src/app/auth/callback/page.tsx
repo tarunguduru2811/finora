@@ -15,6 +15,7 @@ export default function OAuthCallback(){
         useEffect(() => {
             const params = new URLSearchParams(window.location.search);
             const t = params.get("token");
+            localStorage.setItem("token",JSON.stringify(t));
             setToken(t);
         }, []);
 
