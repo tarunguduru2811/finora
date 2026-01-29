@@ -21,7 +21,6 @@ app.use(cors({
     credentials: true,                // Allow credentials
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
-    
   }));
   
 //   // Handle preflight requests

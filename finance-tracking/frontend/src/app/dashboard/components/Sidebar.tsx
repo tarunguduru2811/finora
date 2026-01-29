@@ -1,17 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  CreditCard,
-  Home,
-  PieChart,
-  LogOut,
-  List,
-  HandCoins,
-  Repeat2,
-  Menu,
-  X
-} from "lucide-react";
+import { CreditCard, Home, PieChart, LogOut, List, HandCoins, Repeat2, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
@@ -40,7 +30,7 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Header (with hamburger) */}
+      {/* Mobile Header (Hamburger) */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b flex items-center justify-between px-4 h-16">
         <Image src="/assets/Finora.png" alt="Logo" width={120} height={40} />
         <button onClick={() => setIsOpen(!isOpen)}>
@@ -52,8 +42,8 @@ export function Sidebar() {
       <div
         className={cn(
           "fixed top-0 left-0 h-screen w-64 bg-white border-r flex flex-col transition-transform duration-300 z-50",
-          "md:translate-x-0", // Always visible on desktop
-          isOpen ? "translate-x-0" : "-translate-x-full" // Hidden on mobile
+          "md:translate-x-0", // always visible on desktop
+          isOpen ? "translate-x-0" : "-translate-x-full" // toggle on mobile
         )}
       >
         {/* Logo */}
@@ -98,18 +88,13 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Overlay for mobile when sidebar is open */}
+      {/* Overlay for mobile */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
-
-      {/* Page Content Wrapper */}
-      <div className="md:ml-64 min-h-screen pt-16 md:pt-0">
-        {/* The rest of your page will scroll here */}
-      </div>
     </>
   );
 }

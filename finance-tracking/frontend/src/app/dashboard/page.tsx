@@ -97,7 +97,7 @@ export default function DashboardPage() {
         <div className="p-6 space-y-6 mt-6">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold">Welcome Back {user?.name} 👋!</h1>
-                <MonthlyReportCard open={open} onClose={() => setOpen(false)} openDialog={() => setOpen(true)} />
+                {/* <MonthlyReportCard open={open} onClose={() => setOpen(false)} openDialog={() => setOpen(true)} /> */}
             </div>
 
             {/* summary cards */}

@@ -38,7 +38,7 @@ export default function RecurringRulePage() {
     }
     const onRefresh = () => fetchAll()
     return (
-        <div className="p-6 space-y-6 mt-7">
+        <div className="p-2 space-y-4 mt-11 overflow-x-hidden">
             <Card>
                 <CardHeader className="flex items-center justify-between">
                     <CardTitle>Recurring Rules</CardTitle>
