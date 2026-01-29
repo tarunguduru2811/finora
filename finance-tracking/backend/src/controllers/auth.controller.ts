@@ -64,54 +64,58 @@ export async function  login(req:Request,res:Response) {
 }
 
 
-export async function forgotPassword(req:Request,res:Response){
-    try{
-        const {email} = req.body;
-        const user = await prisma.user.findUnique({
-            where:{email}
-        })
+export async function forgotPassword(req: Request, res: Response) {
+  try {
+    const { email } = req.body;
 
-        if(!user){
-            return res.status(401).json({error:"User Not Found"})
-        }
+    const user = await prisma.user.findUnique({ where: { email } });
 
-        const token = crypto.randomBytes(32).toString("hex")
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000)
-        await prisma.passwordResetToken.create({
-            data: {
-              token,
-              userId: user.id,
-              expiresAt,
-            },
-          });
+    // Always respond fast (security + UX)
+    res.status(200).json({
+      message: "If that email exists, a reset link has been sent."
+    });
 
-        const resetUrl = `${process.env.CLIENT_URL}/reset-password/?token=${token}`
-        const transporter = await nodemailer.createTransport({
-            service:"gmail",
-            auth:{
-                user:process.env.EMAIL_USER,
-                pass:process.env.EMAIL_PASS
-            }
-        })
+    if (!user) return;
 
-        await transporter.sendMail({
-            from:`Finora Support`,
-            to:email,
-            subject:"Reset Password Link",
-            html:
-            `<h2>Password Reset Request</h2>
-            <p>We received a request to reset your password.Click below link:</p>
-             <a href="${resetUrl}" style="color:#2563eb; font-weight:bold;">Reset Password</a>
-        <p>This link will expire in 15 minutes.</p>`
-        })
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
-        console.log("Reset Link...",resetUrl)
-        return res.status(201).json({message:"Reset Link Sent to Email Successfully"})
+    await prisma.passwordResetToken.create({
+      data: { token, userId: user.id, expiresAt },
+    });
 
-    }catch(err){
-        return handleError(res,err)
-    }
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER!,
+        pass: process.env.EMAIL_PASS!,
+      },
+    });
+
+    await Promise.race([
+      transporter.sendMail({
+        from: "Finora Support <support@finora.app>",
+        to: email,
+        subject: "Reset Password Link",
+        html: `
+          <h2>Password Reset Request</h2>
+          <p>Click below to reset your password:</p>
+          <a href="${resetUrl}">Reset Password</a>
+          <p>This link expires in 15 minutes.</p>
+        `,
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("SMTP timeout")), 8000)
+      ),
+    ]);
+
+  } catch (err) {
+    console.error("Forgot password error:", err);
+  }
 }
+
 
 export async function resetPassword(req:Request,res:Response){
     try{
