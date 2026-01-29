@@ -85,7 +85,7 @@ export async function forgotPassword(req:Request,res:Response){
             },
           });
 
-        const resetUrl = `http://localhost:3000/reset-password/?token=${token}`
+        const resetUrl = `${process.env.CLIENT_URL}/reset-password/?token=${token}`
         const transporter = await nodemailer.createTransport({
             service:"gmail",
             auth:{
