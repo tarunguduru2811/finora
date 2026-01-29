@@ -43,7 +43,7 @@ export default function TransactionFilters({ accounts, selectedAccount, typeFilt
 
             <Select value={typeFilter} onValueChange={onTypeChange}>
                 <SelectTrigger>
-                    <SelectValue placeholder="Select Transaction Type...." />
+                    <SelectValue placeholder="Select Trans Type...." />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="INCOME">Income</SelectItem>
